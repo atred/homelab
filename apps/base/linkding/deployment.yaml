@@ -12,6 +12,13 @@ spec:
       labels:
         app: linkding
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
       containers:
         - name: linkding
           image: sissbruecker/linkding:1.41.0
