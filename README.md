@@ -19,3 +19,17 @@ Bootstrap Notes:
       --path=./clusters/staging \
       --personal
   ```
+- Bootstrap sops (TODO improve this)
+```sh
+cat age.agekey | \
+  kubectl create secret generic sops-age \
+  --namespace flux-system \
+  --from-file=age.agekey=/dev/stdin
+```
+
+Encrypting secrets:
+```sh
+sops --age=$AGE_PUBLIC --encrypt --encrypted-regex '^(data|stringData)$' --in-place <filename.yaml>
+```
+
+
