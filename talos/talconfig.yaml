@@ -1,0 +1,66 @@
+---
+clusterName: homelab-cluster
+talosVersion: v1.11.5
+kubernetesVersion: v1.34.0
+endpoint: https://10.100.50.11:6443
+domain: k8s.int.redinbo.net
+allowSchedulingOnMasters: true
+clusterPodNets:
+  - 10.200.0.0/16
+clusterSvcNets:
+  - 10.210.0.0/16
+
+nodes:
+  - hostname: g3m1
+    ipAddress: 10.100.50.11
+    nameservers:
+      - 10.100.50.1
+    controlPlane: true
+    installDiskSelector:
+      transport:
+        - "nvme"
+        - "sata"
+      size: ">= 50GB"
+  - hostname: g3m2
+    ipAddress: 10.100.50.11
+    nameservers:
+      - 10.100.50.1
+    controlPlane: true
+    installDiskSelector:
+      transport:
+        - "nvme"
+        - "sata"
+      size: ">= 50GB"
+  - hostname: g3m3
+    ipAddress: 10.100.50.11
+    nameservers:
+      - 10.100.50.1
+    controlPlane: true
+    installDiskSelector:
+      transport:
+        - "nvme"
+        - "sata"
+      size: ">= 50GB"
+
+controlPlane:
+  patches:
+    - |-
+      machine:
+        network:
+          interfaces:
+            - deviceSelector:
+                physical: true
+              dhcp: true
+              vip:
+                ip: 10.100.50.10
+    - |-
+      cluster:
+        adminKubeconfig:
+          certLifetime: 876000h
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/i915
+          - siderolabs/intel-ucode
+          - siderolabs/iscsi-tools

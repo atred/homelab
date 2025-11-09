@@ -2,6 +2,7 @@
 
 TODO real docs
 
+## k3s bootstrap
 Bootstrap Notes:
 - Setup k3s without helm controller (flux will do this later)
 ```sh
@@ -15,6 +16,7 @@ sudo chmod 755 /etc/rancher/k3s/k3s.yaml
 # On host machine
 scp <username>@<server-address>:/etc/rancher/k3s/k3s.yaml .
 mv k3s.yaml kubeconfig.yaml
+# edit this to use the correct server address, not loopback
 ```
 - Activate direnv
 - Install flux
@@ -38,9 +40,13 @@ cat age.agekey | \
   --from-file=age.agekey=/dev/stdin
 ```
 
-Encrypting secrets:
-```sh
-sops --age=$AGE_PUBLIC --encrypt --encrypted-regex '^(data|stringData)$' --in-place <filename.yaml>
-```
+## Talos Bootstrap
+Ensure your age key (can be downloaded from password manager) is available in the right location:
+- Linux: `~/.config/sops/age/keys.txt`
+- macOS: `"$HOME/Library/Application Support/sops/age/keys.txt"`
 
-
+1. Download the talos iso with the following extensions:
+  - siderolabs/i915
+  - siderolabs/intel-ucode
+  - siderolabs/iscsi-tools
+2. Install it on the nodes
