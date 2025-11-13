@@ -1,23 +1,5 @@
-# My Kubernetes Homelab
+# homelab-cluster
 
-TODO real docs
-
-## k3s bootstrap
-Bootstrap Notes:
-- Setup k3s without helm controller (flux will do this later)
-```sh
-sudo su -
-curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=helm-controller" sh
-```
-- Copy k3s kubeconfig to this directory
-```sh
-# On remote machine
-sudo chmod 755 /etc/rancher/k3s/k3s.yaml
-# On host machine
-scp <username>@<server-address>:/etc/rancher/k3s/k3s.yaml .
-mv k3s.yaml kubeconfig.yaml
-# edit this to use the correct server address, not loopback
-```
 - Activate direnv
 - Install flux
   - Need personal access token from github, copy it
@@ -45,8 +27,25 @@ Ensure your age key (can be downloaded from password manager) is available in th
 - Linux: `~/.config/sops/age/keys.txt`
 - macOS: `"$HOME/Library/Application Support/sops/age/keys.txt"`
 
-1. Download the talos iso with the following extensions:
+1. Download talos iso with the following extensions:
   - siderolabs/i915
   - siderolabs/intel-ucode
   - siderolabs/iscsi-tools
 2. Install it on the nodes
+3. Run the following:
+```
+# Bootstrap config
+talhelper genconfig
+talosctl apply-config --insecure --nodes 10.100.50.11 --file clusterconfig/homelab-cluster-g3m1.yaml
+talosctl apply-config --insecure --nodes 10.100.50.12 --file clusterconfig/homelab-cluster-g3m2.yaml
+talosctl apply-config --insecure --nodes 10.100.50.13 --file clusterconfig/homelab-cluster-g3m3.yaml
+talosctl config endpoints 10.100.50.11 # no need to specify talos config if direnv is working
+
+# Bootstrap cluster
+talosctl bootstrap --nodes 10.100.50.11
+talosctl config endpoints 10.100.50.10 # After bootstrap, point to VIP
+talosctl kubeconfig kubeconfig.yaml --nodes 10.100.50.11
+
+# Check health:
+talosctl --nodes 10.100.50.11 health
+```

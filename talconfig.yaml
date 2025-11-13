@@ -2,7 +2,7 @@
 clusterName: homelab-cluster
 talosVersion: v1.11.5
 kubernetesVersion: v1.34.0
-endpoint: https://10.100.50.11:6443
+endpoint: https://10.100.50.10:6443
 domain: k8s.int.redinbo.net
 allowSchedulingOnMasters: true
 clusterPodNets:
@@ -22,7 +22,7 @@ nodes:
         - "sata"
       size: ">= 50GB"
   - hostname: g3m2
-    ipAddress: 10.100.50.11
+    ipAddress: 10.100.50.12
     nameservers:
       - 10.100.50.1
     controlPlane: true
@@ -32,7 +32,7 @@ nodes:
         - "sata"
       size: ">= 50GB"
   - hostname: g3m3
-    ipAddress: 10.100.50.11
+    ipAddress: 10.100.50.13
     nameservers:
       - 10.100.50.1
     controlPlane: true
@@ -64,5 +64,5 @@ controlPlane:
           - siderolabs/i915
           - siderolabs/intel-ucode
           - siderolabs/iscsi-tools
-          - siderolabs/nut-client
+          # - siderolabs/nut-client
 
